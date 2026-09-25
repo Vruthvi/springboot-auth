@@ -1,0 +1,17 @@
+schemaVersion: 2.2.0
+metadata:
+  name: springboot-auth
+  version: 1.0.0
+  displayName: Spring Boot Auth
+  description: Spring Boot signup/login backend
+  projectType: springboot
+  language: java
+components:
+  - name: kubernetes-deploy
+    kubernetes:
+      uri: deploy.yaml
+      deployByDefault: true
+commands:
+  - id: build
+    apply:
+      component: kubernetes-deploy

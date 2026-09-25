@@ -15,11 +15,10 @@ spec:
         app: backend
     spec:
       # OpenShift runs pods as an arbitrary UID - do not set runAsUser.
-      # Keep default service account; no privileged access needed.
       containers:
         - name: backend
-          # Replace with your image after `docker build/push` or OpenShift ImageStream.
-          # e.g. image: image-registry.openshift-image-registry.svc:5000/myproject/backend:latest
+          # Replace with your built image, e.g.:
+          # image-registry.openshift-image-registry.svc:5000/myproject/backend:latest
           image: backend:latest
           imagePullPolicy: IfNotPresent
           ports:
@@ -113,4 +112,3 @@ spec:
   tls:
     termination: edge
     insecureEdgeTerminationPolicy: Redirect
-  # host: backend-myproject.apps.example.com  # leave unset for auto-generated host
