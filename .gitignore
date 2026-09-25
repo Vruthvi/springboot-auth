@@ -1,0 +1,7 @@
+target/
+*.class
+*.log
+.idea/
+.vscode/
+# Local secrets - never commit. Use OpenShift Secrets in production.
+.env
