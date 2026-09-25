@@ -4,14 +4,45 @@ metadata:
   version: 1.0.0
   displayName: Spring Boot Auth
   description: Spring Boot signup/login backend
+  tags:
+    - Java
+    - Spring
   projectType: springboot
-  language: java
+  language: Java
+  provider: Red Hat
 components:
+  - name: image-build
+    image:
+      imageName: backend-image:latest
+      dockerfile:
+        uri: docker/Dockerfile
+        buildContext: .
+        rootRequired: false
   - name: kubernetes-deploy
+    attributes:
+      deployment/replicas: 1
+      deployment/cpuRequest: 250m
+      deployment/memoryRequest: 512Mi
+      deployment/container-port: 8080
     kubernetes:
       uri: deploy.yaml
-      deployByDefault: true
+      endpoints:
+        - name: http-8080
+          targetPort: 8080
+          path: /
+          secure: true
 commands:
-  - id: build
+  - id: build-image
+    apply:
+      component: image-build
+  - id: deployk8s
     apply:
       component: kubernetes-deploy
+  - id: deploy
+    composite:
+      commands:
+        - build-image
+        - deployk8s
+      group:
+        kind: deploy
+        isDefault: true

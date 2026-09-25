@@ -1,9 +1,8 @@
 target/
 .git/
 .gitignore
-Dockerfile
-README.md
-openshift/
 *.log
 .idea/
 .vscode/
+springboot-auth/
+openshift/

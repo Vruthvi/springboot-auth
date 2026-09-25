@@ -1,9 +1,7 @@
-apiVersion: apps/v1
 kind: Deployment
+apiVersion: apps/v1
 metadata:
   name: backend
-  labels:
-    app: backend
 spec:
   replicas: 1
   selector:
@@ -14,15 +12,12 @@ spec:
       labels:
         app: backend
     spec:
-      # OpenShift runs pods as an arbitrary UID - do not set runAsUser.
       containers:
         - name: backend
-          # Replace with your built image, e.g.:
-          # image-registry.openshift-image-registry.svc:5000/myproject/backend:latest
-          image: backend:latest
-          imagePullPolicy: IfNotPresent
+          image: backend-image:latest
           ports:
-            - containerPort: 8080
+            - name: http
+              containerPort: 8080
               protocol: TCP
           env:
             - name: PORT
@@ -75,40 +70,21 @@ spec:
             failureThreshold: 3
           resources:
             requests:
-              cpu: 250m
-              memory: 512Mi
+              memory: "512Mi"
+              cpu: "250m"
             limits:
-              cpu: 1000m
-              memory: 1Gi
+              memory: "1Gi"
+              cpu: "1000m"
 ---
-apiVersion: v1
 kind: Service
+apiVersion: v1
 metadata:
   name: backend
-  labels:
-    app: backend
 spec:
+  ports:
+    - name: http-8080
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
   selector:
     app: backend
-  ports:
-    - name: http
-      port: 8080
-      targetPort: 8080
-      protocol: TCP
-  type: ClusterIP
----
-apiVersion: route.openshift.io/v1
-kind: Route
-metadata:
-  name: backend
-  labels:
-    app: backend
-spec:
-  to:
-    kind: Service
-    name: backend
-  port:
-    targetPort: http
-  tls:
-    termination: edge
-    insecureEdgeTerminationPolicy: Redirect
